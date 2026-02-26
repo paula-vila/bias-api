@@ -27,13 +27,12 @@ def analyze():
 
     vec = vectorizer.transform([text])
     prediction = model.predict(vec)[0]
-
-    # Calculate confidence from decision function
+    
     scores = model.decision_function(vec)[0]
     scores = np.array(scores)
-    exp_scores = np.exp(scores - np.max(scores))
-    probabilities = exp_scores / exp_scores.sum()
-    confidence = round(float(np.max(probabilities)) * 100)
+    sorted_scores = np.sort(scores)[::-1]
+    margin = sorted_scores[0] - sorted_scores[1]
+    confidence = round(min(float(margin) / 2.0 * 100, 100))
 
     return jsonify({'bias': prediction, 'confidence': confidence})
 
