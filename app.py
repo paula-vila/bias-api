@@ -27,24 +27,12 @@ def analyze():
 
     vec = vectorizer.transform([text])
     prediction = model.predict(vec)[0]
-    
-    scores = model.decision_function(vec)[0]
-    scores = np.array(scores)
-    sorted_scores = np.sort(scores)[::-1]
-    margin = sorted_scores[0] - sorted_scores[1]
-    confidence = round(min(float(margin) / 2.0 * 100, 100))
 
     scores = model.decision_function(vec)[0]
     scores = np.array(scores)
     sorted_scores = np.sort(scores)[::-1]
     margin = sorted_scores[0] - sorted_scores[1]
-    
-    # Temporary debug - remove later
-    print(f"Margin: {margin}, Raw scores: {sorted_scores[:3]}")
-    
     confidence = round(min(float(margin) / 2.0 * 100, 100))
-    
-    return jsonify({'bias': prediction, 'confidence': confidence, 'debug_margin': float(margin)})
 
     return jsonify({'bias': prediction, 'confidence': confidence})
 
